@@ -6,7 +6,7 @@ public class ControlesBehaviourScript : MonoBehaviour {
     public BotaoBehaviourScript[] botoes; // botoes do controle
 
 
-    private LevelControllerBehaviourScript levelControle; //controlador do nivel
+    public LevelControllerBehaviourScript levelControle; //controlador do nivel
 
 	// Use this for initialization
 	void Start () {
@@ -15,7 +15,7 @@ public class ControlesBehaviourScript : MonoBehaviour {
     // montagem do controle 
     private void Setup()
     {
-        levelControle = LevelControllerBehaviourScript.GetInstance();
+        
         int index = 0;
         // mapeia as cores de acordo com as cores do nivel
         foreach(Color cor in levelControle.cores)

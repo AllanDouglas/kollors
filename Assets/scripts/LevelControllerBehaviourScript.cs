@@ -32,22 +32,8 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     private float _contagemRegressiva = 5; // contagem regressiva
 
 
-    void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            throw new UnityException("Já existe uma instancia de LevelControllerBehaviourScript");
-        }
-    }
-    // recupera a instancia
-    public static LevelControllerBehaviourScript GetInstance()
-    {
-        return Instance;
-    }
+
+
 
 
     // Use this for initialization
@@ -69,10 +55,45 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         BotaoBehaviourScript.BotaoPressionado += Comparar;
 
         BarraDeEnergiaBehaviourScript.BarraZerada += BarraZerada;
+
+
+
     }
+
+    public void Restart()
+    {
+
+        //UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+
+        // para a barra
+        barra.estaLigada = false;
+
+        // iniciando paramentros
+        this._nivel = 1;
+        this.pontos = 0;
+        this.combo = 0;
+        this.barra.Carregar(60);
+        this._contagemRegressiva = 5;
+
+        if (_modelo)
+        {
+            _modelo.gameObject.SetActive(false);
+        }
+        //reseta as labels
+        UiInGame.contagemRegressiva.gameObject.SetActive(true);
+        UiInGame.ContagemRegressiva("5");
+
+       
+
+        // status do evel
+        nivelStartado = false;
+
+    }
+
     // gerencia o zerar da barra
     private void BarraZerada()
     {
+
         barra.estaLigada = false;
         Debug.Log("Barra zerada");
     }
@@ -131,6 +152,9 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // gerecia o erro do jogador
     private void Erro()
     {
+
+        this._audioSource.PlayOneShot(somErro);
+
         // retonar o combo para 1
         combo = 1;
 
@@ -170,6 +194,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         }
 
         // coloca outro modelo
+
         spawner.Spawnar();
 
         barra.Carregar(15);
@@ -188,14 +213,21 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // iniciando o nivel
     private void StartLevel()
     {
-        // status do evel
-        nivelStartado = true;
+
+
+        // flaga o jogo 
+        this.nivelStartado = true;
+        // configura as labels do jogo
+        UiInGame.PontosTxt(pontos.ToString());
+        UiInGame.NivelTxt(StringSystem.NIVEL + " " + _nivel.ToString());
+        UiInGame.ComboTxt("1x" + combo.ToString());
 
         // configura a velocidade da barra
         barra.decrescentePorSegundo = 4;
         // liga a barra 
         barra.estaLigada = true;
         // spawna o primeiro modelo
+        spawner.levelController = this;
         spawner.Spawnar();
 
     }

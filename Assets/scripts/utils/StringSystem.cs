@@ -63,5 +63,44 @@ public static class StringSystem
         }
     }
 
+    // texto do start
+    private static Dictionary<SystemLanguage, string> _start = new Dictionary<SystemLanguage, string>() {
+        { SystemLanguage.English, "Start"},
+        { SystemLanguage.Portuguese, "Iniciar"}
+    };
+    public static string START
+    {
+        get
+        {
+            return _start[_idioma];
+        }
+    }
+
+    // texto da loja
+    private static Dictionary<SystemLanguage, string> _loja = new Dictionary<SystemLanguage, string>() {
+        { SystemLanguage.English, "Shop"},
+        { SystemLanguage.Portuguese, "Loja"}
+    };
+    public static string SHOP
+    {
+        get
+        {
+            return _loja[_idioma];
+        }
+    }
+
+    // texto do ranking
+    private static Dictionary<SystemLanguage, string> _ranking = new Dictionary<SystemLanguage, string>() {
+        { SystemLanguage.English, "Ranking"},
+        { SystemLanguage.Portuguese, "Ranking"}
+    };
+    public static string RANKING
+    {
+        get
+        {
+            return _ranking[_idioma];
+        }
+    }
+
 
 } 

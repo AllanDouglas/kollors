@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class GerenciadorDeParticulaBehaviourScript : MonoBehaviour {
 
@@ -8,7 +7,7 @@ public class GerenciadorDeParticulaBehaviourScript : MonoBehaviour {
     private ParticleSystem[] particlePool = new ParticleSystem[4]; //particle pool controller
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         Setup();	
 	}
 	// Montagem
@@ -17,7 +16,8 @@ public class GerenciadorDeParticulaBehaviourScript : MonoBehaviour {
         for(int i = 0; i < particlePool.Length; i++)
         {
             particlePool[i] = Instantiate(particlePrefab);
-            particlePool[i].Stop();            
+            particlePool[i].Stop();
+            particlePool[i].transform.parent = transform;
         }
     }
     // ativa uma particula disponivel
