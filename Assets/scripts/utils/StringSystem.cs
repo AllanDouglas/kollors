@@ -76,6 +76,19 @@ public static class StringSystem
         }
     }
 
+    // texto de pontos
+    private static Dictionary<SystemLanguage, string> _pontos = new Dictionary<SystemLanguage, string>() {
+        { SystemLanguage.English, "Score"},
+        { SystemLanguage.Portuguese, "Pontos"}
+    };
+    public static string PONTOS
+    {
+        get
+        {
+            return _pontos[_idioma];
+        }
+    }
+
     // texto da loja
     private static Dictionary<SystemLanguage, string> _loja = new Dictionary<SystemLanguage, string>() {
         { SystemLanguage.English, "Shop"},

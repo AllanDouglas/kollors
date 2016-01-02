@@ -13,6 +13,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     public SpawnerBehaviourScript spawner; //spawner do level
     public UiInGameBehaviourScript UiInGame; // interface do jogo
     public GerenciadorDeParticulaBehaviourScript particulaDeAcerto; //gerenciador da particula do acerto
+    public GameOverUIBehaviourScript GameOverUi; //interface do gameover
     [Header("Controle do nivel")]
     public int nivelMaximo = 1; // nivel maximo
     public int moduladorDoNivel = 5; // controle de pontos para passar de nivel
@@ -39,6 +40,9 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        // garante que o jogo esteja ativo
+        Time.timeScale = 1.0f;
+
         // configura o level
         Setup();
         //inicia o nivel
@@ -47,7 +51,15 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // monta o level
     private void Setup()
     {
+
+        //recupera o record anterior
+        record = PlayerPrefs.GetInt("_record_");
+        //captura a fonte de audio
         this._audioSource = GetComponent<AudioSource>();
+        // configura as labels do jogo
+        UiInGame.PontosTxt(pontos.ToString());
+        UiInGame.NivelTxt(StringSystem.NIVEL + " " + _nivel.ToString());
+        UiInGame.ComboTxt("1x1");
 
         // configura os eventos
         SpawnerBehaviourScript.OnSpawn += CapturarModelo;
@@ -64,6 +76,12 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     {
 
         //UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+
+        //remove a interface de gameover
+        GameOverUi.gameObject.SetActive(false);
+
+        //reativa a ui in game
+        UiInGame.gameObject.SetActive(true);
 
         // para a barra
         barra.estaLigada = false;
@@ -90,12 +108,44 @@ public class LevelControllerBehaviourScript : MonoBehaviour
 
     }
 
+    private void GravarPontuacao()
+    {
+
+        int _record = PlayerPrefs.GetInt("_record_");
+
+        if(_record < pontos)
+        {
+            PlayerPrefs.SetInt("_record_", pontos);
+            record = pontos;
+        }
+
+        
+
+    }
+
+    private void GameOver()
+    {
+
+        GravarPontuacao();
+
+        _modelo.gameObject.SetActive(false  );
+
+        UiInGame.gameObject.SetActive(false);
+        GameOverUi.gameObject.SetActive(true);
+
+        GameOverUi.PontosTxt(pontos.ToString());
+        GameOverUi.RecordTxt(record.ToString());
+
+        GameOverUi.gameObject.SetActive(true);
+        barra.estaLigada = false;
+
+    }
+
     // gerencia o zerar da barra
     private void BarraZerada()
     {
-
-        barra.estaLigada = false;
         Debug.Log("Barra zerada");
+        GameOver();
     }
 
     // captura o modeo atual
@@ -220,7 +270,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         // configura as labels do jogo
         UiInGame.PontosTxt(pontos.ToString());
         UiInGame.NivelTxt(StringSystem.NIVEL + " " + _nivel.ToString());
-        UiInGame.ComboTxt("1x" + combo.ToString());
+        UiInGame.ComboTxt("1x1");
 
         // configura a velocidade da barra
         barra.decrescentePorSegundo = 4;
