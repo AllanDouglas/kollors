@@ -57,4 +57,9 @@ public class BotaoBehaviourScript : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    void OnDestroy()
+    {
+        BotaoPressionado = null;
+    }
 }

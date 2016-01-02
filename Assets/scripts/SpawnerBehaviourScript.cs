@@ -41,7 +41,7 @@ public class SpawnerBehaviourScript : MonoBehaviour
         modelo.gameObject.SetActive(true);
         modelo.transform.position = transform.position;
         // seta a cor do objeto
-        modelo.cor = levelController.cores[Random.Range(0, levelController.cores.Count)];
+        modelo.cor = levelController.cores[Random.Range(0, levelController.cores.Length)];
 
         if (OnSpawn != null)
         {
@@ -56,5 +56,9 @@ public class SpawnerBehaviourScript : MonoBehaviour
 
     }
 
+    void OnDestroy()
+    {
+        OnSpawn = null;
+    }
 
 }

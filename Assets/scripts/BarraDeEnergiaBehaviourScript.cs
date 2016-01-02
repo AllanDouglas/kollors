@@ -60,5 +60,8 @@ public class BarraDeEnergiaBehaviourScript : MonoBehaviour
         _slider.value += valor;
     }
 
-
+    void OnDestroy()
+    {
+        BarraZerada = null;
+    }
 }

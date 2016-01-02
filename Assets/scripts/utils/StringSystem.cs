@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public static class StringSystem
+public class StringSystem
 {
 
     public const SystemLanguage PADRAO = SystemLanguage.English; //linguagem padrao

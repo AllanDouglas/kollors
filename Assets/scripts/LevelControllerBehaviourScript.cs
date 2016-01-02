@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 using System;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(AudioSource))]
 
 public class LevelControllerBehaviourScript : MonoBehaviour
 {
     [Header("Cores")]
-    public List<Color> cores; //cores do game
+    public Color[] cores; //cores do game
     [Header("Externos")]
     public BarraDeEnergiaBehaviourScript barra; // bara para contagem do tempo
     public SpawnerBehaviourScript spawner; //spawner do level
@@ -24,8 +24,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
 
     [HideInInspector]
     public int pontos, combo = 1, record, _nivel = 1;
-
-    private static LevelControllerBehaviourScript Instance = null; // controle de singleton
+    
     private ModeloBehaviourScript _modelo; // instancia do modelo atual para comparação
     private AudioSource _audioSource; // reproduror do som
 
@@ -62,20 +61,29 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         UiInGame.ComboTxt("1x1");
 
         // configura os eventos
-        SpawnerBehaviourScript.OnSpawn += CapturarModelo;
+        
+        SpawnerBehaviourScript.OnSpawn += this.CapturarModelo;
 
-        BotaoBehaviourScript.BotaoPressionado += Comparar;
+        BotaoBehaviourScript.BotaoPressionado += this.Comparar;
 
-        BarraDeEnergiaBehaviourScript.BarraZerada += BarraZerada;
-
+        BarraDeEnergiaBehaviourScript.BarraZerada += this.BarraZerada;
+        
 
 
     }
 
+
+
     public void Restart()
     {
+        
+        SpawnerBehaviourScript.OnSpawn -= this.CapturarModelo;
 
-        //UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+        BotaoBehaviourScript.BotaoPressionado -= this.Comparar;
+
+        BarraDeEnergiaBehaviourScript.BarraZerada -= this.BarraZerada;
+
+        NavegacaoBehaviourScript.Carregar(SceneManager.GetActiveScene());
 
         //remove a interface de gameover
         GameOverUi.gameObject.SetActive(false);
@@ -300,5 +308,14 @@ public class LevelControllerBehaviourScript : MonoBehaviour
             _contagemRegressiva -= Time.deltaTime;
         }
 
+    }
+
+    void OnDestroy()
+    {
+        SpawnerBehaviourScript.OnSpawn -= this.CapturarModelo;
+
+        BotaoBehaviourScript.BotaoPressionado -= this.Comparar;
+
+        BarraDeEnergiaBehaviourScript.BarraZerada -= this.BarraZerada;
     }
 }
