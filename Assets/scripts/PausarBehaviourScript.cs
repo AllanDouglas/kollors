@@ -25,6 +25,8 @@ public class PausarBehaviourScript : MonoBehaviour {
 
         Time.timeScale= (pausado) ? 0.0f : 1.0f;
 
+        LevelControllerBehaviourScript.ESTA_JOGANDO = !pausado;
+
 
 
     }

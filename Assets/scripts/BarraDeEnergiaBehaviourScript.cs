@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Slider))]
-
-
 
 public class BarraDeEnergiaBehaviourScript : MonoBehaviour
 {

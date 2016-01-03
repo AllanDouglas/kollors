@@ -30,18 +30,13 @@ public class LevelControllerBehaviourScript : MonoBehaviour
 
     private bool nivelStartado = false; // controle da inicialização do nivel
     private float _contagemRegressiva = 5; // contagem regressiva
-
-
-
-
-
+    public static bool ESTA_JOGANDO = true; //status do game
 
     // Use this for initialization
     void Start()
     {
         // garante que o jogo esteja ativo
         Time.timeScale = 1.0f;
-
         // configura o level
         Setup();
         //inicia o nivel
@@ -50,7 +45,6 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // monta o level
     private void Setup()
     {
-
         //recupera o record anterior
         record = PlayerPrefs.GetInt("_record_");
         //captura a fonte de audio
@@ -59,30 +53,21 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         UiInGame.PontosTxt(pontos.ToString());
         UiInGame.NivelTxt(StringSystem.NIVEL + " " + _nivel.ToString());
         UiInGame.ComboTxt("1x1");
-
-        // configura os eventos
-        
+        // configura os eventos       
         SpawnerBehaviourScript.OnSpawn += this.CapturarModelo;
-
         BotaoBehaviourScript.BotaoPressionado += this.Comparar;
-
-        BarraDeEnergiaBehaviourScript.BarraZerada += this.BarraZerada;
-        
-
-
+        BarraDeEnergiaBehaviourScript.BarraZerada += this.BarraZerada;  
     }
 
 
-
+    //reinicia o nivel
     public void Restart()
     {
         
+        // remove os elementos
         SpawnerBehaviourScript.OnSpawn -= this.CapturarModelo;
-
         BotaoBehaviourScript.BotaoPressionado -= this.Comparar;
-
         BarraDeEnergiaBehaviourScript.BarraZerada -= this.BarraZerada;
-
         NavegacaoBehaviourScript.Carregar(SceneManager.GetActiveScene());
 
         //remove a interface de gameover
@@ -165,6 +150,9 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // compara a ação do botão com o bloco vigente
     private void Comparar(BotaoBehaviourScript botao)
     {
+        // verifica se o jogo está rodando
+        if (ESTA_JOGANDO == false) return;
+
         // controle do acerto
         bool acertou = false;
 
@@ -309,7 +297,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         }
 
     }
-
+    // quando 
     void OnDestroy()
     {
         SpawnerBehaviourScript.OnSpawn -= this.CapturarModelo;
