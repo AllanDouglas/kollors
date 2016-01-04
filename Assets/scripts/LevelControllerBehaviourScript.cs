@@ -30,6 +30,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
 
     private bool nivelStartado = false; // controle da inicialização do nivel
     private float _contagemRegressiva = 5; // contagem regressiva
+    private int _moduladorDoNivel; //controla quantos pontos são nescessários para passar de nivel
     public static bool ESTA_JOGANDO = true; //status do game
 
     // Use this for initialization
@@ -45,6 +46,9 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // monta o level
     private void Setup()
     {
+        // cotrolador do nivel
+        _moduladorDoNivel = moduladorDoNivel;
+
         //recupera o record anterior
         record = PlayerPrefs.GetInt("_record_");
         //captura a fonte de audio
@@ -183,6 +187,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // adiciona um ponto
     private void AdicionarPonto()
     {
+
         AdicionarPontos(1);
     }
 
@@ -213,6 +218,13 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // gerencia o acerto do Jogador
     private void Acerto()
     {
+        //calcula o nivel
+        _moduladorDoNivel--;
+        if(_moduladorDoNivel == 0 & _nivel < nivelMaximo)
+        {
+            _moduladorDoNivel = moduladorDoNivel;
+            LevelUp();
+        }
 
         // play a particula
         particulaDeAcerto.Play(_modelo.transform.position);
@@ -232,13 +244,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         // adiciona pontos
 
         AdicionarPonto();
-
-        if (pontos % moduladorDoNivel == 0 & _nivel < nivelMaximo)
-        {
-
-            LevelUp();
-        }
-
+        
         // coloca outro modelo
 
         spawner.Spawnar();
@@ -249,6 +255,8 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // incrementa o nivel
     private void LevelUp()
     {
+
+        Debug.Log("######## LevelUp #########");
 
         _nivel++;
         barra.decrescentePorSegundo += velocidadeDaBarraPorNivel;
