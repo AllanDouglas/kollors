@@ -27,7 +27,7 @@ public class GerenciadorDeParticulaBehaviourScript : MonoBehaviour {
         {
             if (particle.isStopped)
             {
-                particle.transform.position = posicao;
+                particle.transform.position = new Vector3(transform.position.x, transform.position.y, -2);
                 particle.Play();
                 break;
             }

@@ -14,6 +14,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     public UiInGameBehaviourScript UiInGame; // interface do jogo
     public GerenciadorDeParticulaBehaviourScript particulaDeAcerto; //gerenciador da particula do acerto
     public GameOverUIBehaviourScript GameOverUi; //interface do gameover
+    public LevelUpAnimationBehaviourScript LevelUPAnimation; // interação do nivel 
     [Header("Controle do nivel")]
     public int nivelMaximo = 1; // nivel maximo
     public int moduladorDoNivel = 5; // controle de pontos para passar de nivel
@@ -21,6 +22,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     [Header("Efeitos Sonoros")]
     public AudioClip somAcerto;//efeito do acerto 
     public AudioClip somErro; //efeito do erro
+    public AudioClip levelUp; //  level up
 
     [HideInInspector]
     public int pontos, combo = 1, record, _nivel = 1;
@@ -257,6 +259,11 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     {
 
         Debug.Log("######## LevelUp #########");
+
+        //reproduz o som
+        this._audioSource.PlayOneShot(levelUp);
+        // ativa a animação
+        this.LevelUPAnimation.gameObject.SetActive(true);
 
         _nivel++;
         barra.decrescentePorSegundo += velocidadeDaBarraPorNivel;
