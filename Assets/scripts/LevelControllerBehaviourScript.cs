@@ -15,6 +15,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     public GerenciadorDeParticulaBehaviourScript particulaDeAcerto; //gerenciador da particula do acerto
     public GameOverUIBehaviourScript GameOverUi; //interface do gameover
     public LevelUpAnimationBehaviourScript LevelUPAnimation; // interação do nivel 
+    public UiTutorialBehaviourScript UiTutorial; // interface de tutorial
     [Header("Controle do nivel")]
     public int nivelMaximo = 1; // nivel maximo
     public int moduladorDoNivel = 5; // controle de pontos para passar de nivel
@@ -38,8 +39,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        // garante que o jogo esteja ativo
-        Time.timeScale = 1.0f;
+       
         // configura o level
         Setup();
         //inicia o nivel
@@ -48,6 +48,19 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // monta o level
     private void Setup()
     {
+        // garante que o jogo esteja ativo
+        Time.timeScale = 1.0f;
+
+        //desativa a interface de tutorial
+        UiTutorial.gameObject.SetActive(false);
+        // verifica se o tutorial já foi visto
+        if (PlayerPrefs.GetInt("_tutorial_") == 0)
+        {
+            Time.timeScale = 0.0f;
+            UiTutorial.gameObject.SetActive(true);
+        }
+
+
         // cotrolador do nivel
         _moduladorDoNivel = moduladorDoNivel;
 
@@ -62,10 +75,17 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         // configura os eventos       
         SpawnerBehaviourScript.OnSpawn += this.CapturarModelo;
         BotaoBehaviourScript.BotaoPressionado += this.Comparar;
-        BarraDeEnergiaBehaviourScript.BarraZerada += this.BarraZerada;  
+        BarraDeEnergiaBehaviourScript.BarraZerada += this.BarraZerada;
+        UiTutorialBehaviourScript.Fechado += TutorialFechado;
     }
 
+    private void TutorialFechado()
+    {
+        Debug.Log("Tutorial Fechado");
+        // seta a configuração de tutorial
+        PlayerPrefs.SetInt("_tutorial_", 1);
 
+    }
     //reinicia o nivel
     public void Restart()
     {
@@ -320,5 +340,6 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         BotaoBehaviourScript.BotaoPressionado -= this.Comparar;
 
         BarraDeEnergiaBehaviourScript.BarraZerada -= this.BarraZerada;
+        UiTutorialBehaviourScript.Fechado -= this.TutorialFechado;
     }
 }

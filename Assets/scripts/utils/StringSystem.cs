@@ -115,5 +115,31 @@ public class StringSystem
         }
     }
 
+    // texto da dica de cor
+    private static Dictionary<SystemLanguage, string> _dica_cor = new Dictionary<SystemLanguage, string>() {
+        { SystemLanguage.English, "Filled shapes , tap on same color."},
+        { SystemLanguage.Portuguese, "Formas preenchidas, toque na cor igual."}
+    };
+    public static string DICA_COR
+    {
+        get
+        {
+            return _dica_cor[_idioma];
+        }
+    }
 
-} 
+    // texto da dica de FORMA
+    private static Dictionary<SystemLanguage, string> _dica_forma = new Dictionary<SystemLanguage, string>() {
+        { SystemLanguage.English, "unfilled , tap on same form"},
+        { SystemLanguage.Portuguese, "Sem preenchimento, toque na forma igual."}
+    };
+    public static string DICA_FORMA
+    {
+        get
+        {
+            return _dica_forma[_idioma];
+        }
+    }
+
+
+}
