@@ -16,6 +16,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     public GameOverUIBehaviourScript GameOverUi; //interface do gameover
     public LevelUpAnimationBehaviourScript LevelUPAnimation; // interação do nivel 
     public UiTutorialBehaviourScript UiTutorial; // interface de tutorial
+    public NovoRecordBehaviourScript UiNovoRecord; // interface do novo record 
     [Header("Controle do nivel")]
     public int nivelMaximo = 1; // nivel maximo
     public int moduladorDoNivel = 5; // controle de pontos para passar de nivel
@@ -24,6 +25,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     public AudioClip somAcerto;//efeito do acerto 
     public AudioClip somErro; //efeito do erro
     public AudioClip levelUp; //  level up
+    public AudioClip somNovoRecord;// novo record
 
     [HideInInspector]
     public int pontos, combo = 1, record, _nivel = 1;
@@ -126,7 +128,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         nivelStartado = false;
 
     }
-
+    //salva a pontuação do celular
     private void GravarPontuacao()
     {
 
@@ -141,7 +143,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         
 
     }
-
+    //game over
     private void GameOver()
     {
 
@@ -218,7 +220,15 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     {
         this.pontos += pontos * combo;
 
+        if(this.pontos > record & !UiNovoRecord.gameObject.activeSelf)
+        {
+            UiNovoRecord.gameObject.SetActive(true);
+            this._audioSource.PlayOneShot(somNovoRecord);
+        }
+
         UiInGame.PontosTxt(this.pontos.ToString());
+
+        
 
     }
 
@@ -318,17 +328,19 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     {
         // exibe a contagem regressiva
         UiInGame.ContagemRegressiva(Math.Round(_contagemRegressiva).ToString());
+        _contagemRegressiva -= Time.deltaTime;
         //inicia a contagem regressiva
         if (!nivelStartado)
         {
             if (_contagemRegressiva <= 0)
             {
+                
                 UiInGame.contagemRegressiva.gameObject.SetActive(false);
                 StartLevel();
 
             }
 
-            _contagemRegressiva -= Time.deltaTime;
+           
         }
 
     }
