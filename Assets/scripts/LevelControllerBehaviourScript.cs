@@ -17,6 +17,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     public LevelUpAnimationBehaviourScript LevelUPAnimation; // interação do nivel 
     public UiTutorialBehaviourScript UiTutorial; // interface de tutorial
     public NovoRecordBehaviourScript UiNovoRecord; // interface do novo record 
+    public SpecialBehaviourScript barraSpecial; // barra que marca o special
     [Header("Controle do nivel")]
     public int nivelMaximo = 1; // nivel maximo
     public int moduladorDoNivel = 5; // controle de pontos para passar de nivel
@@ -26,10 +27,11 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     public AudioClip somErro; //efeito do erro
     public AudioClip levelUp; //  level up
     public AudioClip somNovoRecord;// novo record
+    public AudioClip somSpecial; // som da ativação do Special
 
     [HideInInspector]
     public int pontos, combo = 1, record, _nivel = 1;
-    
+
     private ModeloBehaviourScript _modelo; // instancia do modelo atual para comparação
     private AudioSource _audioSource; // reproduror do som
 
@@ -41,7 +43,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-       
+
         // configura o level
         Setup();
         //inicia o nivel
@@ -91,7 +93,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     //reinicia o nivel
     public void Restart()
     {
-        
+
         // remove os elementos
         SpawnerBehaviourScript.OnSpawn -= this.CapturarModelo;
         BotaoBehaviourScript.BotaoPressionado -= this.Comparar;
@@ -122,7 +124,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         UiInGame.contagemRegressiva.gameObject.SetActive(true);
         UiInGame.ContagemRegressiva("5");
 
-       
+
 
         // status do evel
         nivelStartado = false;
@@ -134,13 +136,13 @@ public class LevelControllerBehaviourScript : MonoBehaviour
 
         int _record = PlayerPrefs.GetInt("_record_");
 
-        if(_record < pontos)
+        if (_record < pontos)
         {
             PlayerPrefs.SetInt("_record_", pontos);
             record = pontos;
         }
 
-        
+
 
     }
     //game over
@@ -149,7 +151,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
 
         GravarPontuacao();
 
-        _modelo.gameObject.SetActive(false  );
+        _modelo.gameObject.SetActive(false);
 
         UiInGame.gameObject.SetActive(false);
         GameOverUi.gameObject.SetActive(true);
@@ -211,8 +213,10 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // adiciona um ponto
     private void AdicionarPonto()
     {
-
-        AdicionarPontos(1);
+        if (barraSpecial.EstaAtiva() == false)
+            AdicionarPontos(1);
+        else
+            AdicionarPontos(2);
     }
 
     // gerencia o contro dos pontos
@@ -220,7 +224,8 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     {
         this.pontos += pontos * combo;
 
-        if(this.pontos > record & !UiNovoRecord.gameObject.activeSelf)
+
+        if (this.pontos > record & !UiNovoRecord.gameObject.activeSelf)
         {
             UiNovoRecord.gameObject.SetActive(true);
             this._audioSource.PlayOneShot(somNovoRecord);
@@ -228,7 +233,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
 
         UiInGame.PontosTxt(this.pontos.ToString());
 
-        
+
 
     }
 
@@ -242,6 +247,15 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         combo = 1;
 
         UiInGame.ComboTxt("1x" + combo.ToString());
+        //se errar zera a barra de special
+        barraSpecial.Descarregar();
+        /*
+        se a barra especial estava ativa zera a barra de tempo
+        if (barraSpecial.EstaAtiva())
+        {
+            barra.Descarregar(60);
+        }
+        */
 
         barra.Descarregar(6);
 
@@ -250,9 +264,31 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // gerencia o acerto do Jogador
     private void Acerto()
     {
+        // adiciona o combo até 4 no maximo
+        if (combo < 4)
+        {
+            combo++;
+        }
+        //a cada acerto carrega um pouco a barra de special
+        if (barraSpecial.EstaAtiva() == false)
+        {
+            UiInGame.ComboTxt("1x" + combo.ToString());
+            barraSpecial.Carregar(1);
+
+            if (barraSpecial.EstaCheia())
+            {
+                barraSpecial.Ativar(10);
+            }
+
+        }
+        else
+        {// se a barra esta ativa
+            UiInGame.ComboTxt("2x" + combo.ToString());
+            barra.Carregar(5); // carrega mais 5 pontos de energia se a barra de special está ativa
+        }
         //calcula o nivel
         _moduladorDoNivel--;
-        if(_moduladorDoNivel == 0 & _nivel < nivelMaximo)
+        if (_moduladorDoNivel == 0 & _nivel < nivelMaximo)
         {
             _moduladorDoNivel = moduladorDoNivel;
             LevelUp();
@@ -262,12 +298,8 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         particulaDeAcerto.Play(_modelo.transform.position);
         // efeito sonoro
         this._audioSource.PlayOneShot(somAcerto);
-        // adiciona o combo até 4 no maximo
-        if (combo < 4)
-        {
-            combo++;
-        }
-        UiInGame.ComboTxt("1x" + combo.ToString());
+       
+    
         // executa a animção do acerto
         // axecuta o som do acerto
         // desativa o modelo atual
@@ -276,7 +308,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         // adiciona pontos
 
         AdicionarPonto();
-        
+
         // coloca outro modelo
 
         spawner.Spawnar();
@@ -334,14 +366,21 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         {
             if (_contagemRegressiva <= 0)
             {
-                
+
                 UiInGame.contagemRegressiva.gameObject.SetActive(false);
                 StartLevel();
 
             }
 
-           
+
         }
+        /*
+        if (Input.acceleration.sqrMagnitude > 2 & barraSpecial.EstaCheia() & )
+        {
+            this._audioSource.PlayOneShot(somSpecial);
+            barraSpecial.Ativar(10);
+        }
+        */
 
     }
     // quando 
