@@ -18,6 +18,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     public UiTutorialBehaviourScript UiTutorial; // interface de tutorial
     public NovoRecordBehaviourScript UiNovoRecord; // interface do novo record 
     public SpecialBehaviourScript barraSpecial; // barra que marca o special
+    public ParticleSystem particulaBackGround; // particula de fundo
     [Header("Controle do nivel")]
     public int nivelMaximo = 1; // nivel maximo
     public int moduladorDoNivel = 5; // controle de pontos para passar de nivel
@@ -264,6 +265,11 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // gerencia o acerto do Jogador
     private void Acerto()
     {
+        //troca a cor da particula de fundo
+        Color nova_cor = _modelo.cor;
+        nova_cor.a = 0.3f;
+        particulaBackGround.startColor = nova_cor;
+
         // adiciona o combo até 4 no maximo
         if (combo < 4)
         {
@@ -277,6 +283,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
 
             if (barraSpecial.EstaCheia())
             {
+                this._audioSource.PlayOneShot(somSpecial);
                 barraSpecial.Ativar(10);
             }
 

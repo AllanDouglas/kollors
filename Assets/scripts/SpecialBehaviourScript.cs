@@ -9,7 +9,8 @@ public class SpecialBehaviourScript : MonoBehaviour {
     public Color corAtivacaoCamera; // cor da barra quando ela estiver cheia
     //public Image imagemDaBarra; // imagem que representa o carregamento
     public ParticleSystem particulaDeAtivacao; // play quando a barra é ativada
-    public Camera camera; // camera do game
+    public Animator cameraAnimator; // camera do game
+    public Animator textoAnimatior; // texto da animação
 
     private Color corPadrao; // cor padrão da camera
     private bool estaAtivo = false;
@@ -22,7 +23,7 @@ public class SpecialBehaviourScript : MonoBehaviour {
     //configurações iniciais
     private void Setup()
     {
-        corPadrao = camera.backgroundColor;
+        
         barra.maxValue = cargaMaxima;
         m_tempo_restante = tempoDeDescarga;
     }
@@ -65,7 +66,8 @@ public class SpecialBehaviourScript : MonoBehaviour {
     {
         estaAtivo = false;
         m_tempo_restante = tempoDeDescarga;
-        camera.backgroundColor = corPadrao;
+        cameraAnimator.SetBool("special", false);
+        textoAnimatior.SetBool("special", false);
     }
 
     // ativa as funcionalidade    
@@ -73,7 +75,8 @@ public class SpecialBehaviourScript : MonoBehaviour {
     {
         Debug.Log("Barrade special ativada");
         estaAtivo = true;
-        camera.backgroundColor = corAtivacaoCamera;
+        cameraAnimator.SetBool("special", true);
+        textoAnimatior.SetBool("special", true);
         m_velocidade_descarga = velocidade;
         particulaDeAtivacao.Play();
     }

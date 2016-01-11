@@ -53,7 +53,7 @@ public class StringSystem
     // texto do record
     private static Dictionary<SystemLanguage, string> _record = new Dictionary<SystemLanguage, string>() {
         { SystemLanguage.English, "HiScore"},
-        { SystemLanguage.Portuguese, "Record"}
+        { SystemLanguage.Portuguese, "Recorde"}
     };
     public static string RECORD
     {
