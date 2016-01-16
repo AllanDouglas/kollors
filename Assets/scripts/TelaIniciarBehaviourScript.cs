@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class TelaIniciarBehaviourScript : MonoBehaviour {
 
-    public Text startTxt, rankingTxt, shopTxt; // textos dos botões 
+    public Text startTxt, rankingTxt, shopTxt, quitText; // textos dos botões 
 
 	// Use this for initialization
 	void Start () {
@@ -16,6 +16,7 @@ public class TelaIniciarBehaviourScript : MonoBehaviour {
         StringSystem.Idioma = Application.systemLanguage;
 
         startTxt.text = StringSystem.START;
+        quitText.text = StringSystem.QUIT;
         rankingTxt.text = StringSystem.RANKING;
         shopTxt.text = StringSystem.SHOP;
     }

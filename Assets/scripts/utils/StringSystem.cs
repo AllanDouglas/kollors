@@ -7,6 +7,8 @@ public class StringSystem
 
     public const SystemLanguage PADRAO = SystemLanguage.English; //linguagem padrao
 
+
+
     private static SystemLanguage _idioma = PADRAO;  // idioma selecionado
     public static SystemLanguage Idioma
     {
@@ -23,6 +25,19 @@ public class StringSystem
         SystemLanguage.Portuguese,
         SystemLanguage.English
     };
+
+    // texto do nivel
+    private static Dictionary<SystemLanguage, string> _ACERTOS = new Dictionary<SystemLanguage, string>() {
+        { SystemLanguage.English, "Hits"},
+        { SystemLanguage.Portuguese, "Acertos"}
+    };
+    public static string ACERTOS
+    {
+        get
+        {
+            return _ACERTOS[_idioma];
+        }
+    }
 
     // texto do nivel
     private static Dictionary<SystemLanguage, string> _NIVEL = new Dictionary<SystemLanguage, string>() {
@@ -47,6 +62,19 @@ public class StringSystem
         get
         {
             return _combo[_idioma];
+        }
+    }
+
+    // texto do record
+    private static Dictionary<SystemLanguage, string> _sair = new Dictionary<SystemLanguage, string>() {
+        { SystemLanguage.English, "Quit"},
+        { SystemLanguage.Portuguese, "Sair"}
+    };
+    public static string QUIT
+    {
+        get
+        {
+            return _sair[_idioma];
         }
     }
 

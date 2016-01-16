@@ -4,8 +4,11 @@ using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(AudioSource))]
 
-public class LevelControllerBehaviourScript : MonoBehaviour
+public class LevelControllerBehaviourScript :  MonoBehaviour
 {
+    public enum Modo {Normal , Rush };
+    [Header("Modo do jogo")]
+    public Modo modo = Modo.Normal; // modo do jogo
     [Header("Cores")]
     public Color[] cores; //cores do game
     [Header("Externos")]
@@ -19,10 +22,13 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     public NovoRecordBehaviourScript UiNovoRecord; // interface do novo record 
     public SpecialBehaviourScript barraSpecial; // barra que marca o special
     public ParticleSystem particulaBackGround; // particula de fundo
+
     [Header("Controle do nivel")]
     public int nivelMaximo = 1; // nivel maximo
     public int moduladorDoNivel = 5; // controle de pontos para passar de nivel
     public float velocidadeDaBarraPorNivel; // velocidade da queda da barra por nivel
+    [Header("Controle do special")]
+    public int restauracaoBarra; // quanto a barra de energia é restaurada
     [Header("Efeitos Sonoros")]
     public AudioClip somAcerto;//efeito do acerto 
     public AudioClip somErro; //efeito do erro
@@ -35,9 +41,9 @@ public class LevelControllerBehaviourScript : MonoBehaviour
 
     private ModeloBehaviourScript _modelo; // instancia do modelo atual para comparação
     private AudioSource _audioSource; // reproduror do som
-
+    private int _acertos_seguidos = 0, _maximo_acertos_seguidos; // quantidade de acertos seguidos na partida
     private bool nivelStartado = false; // controle da inicialização do nivel
-    private float _contagemRegressiva = 5; // contagem regressiva
+    private float _contagemRegressiva = 3; // contagem regressiva
     private int _moduladorDoNivel; //controla quantos pontos são nescessários para passar de nivel
     public static bool ESTA_JOGANDO = true; //status do game
 
@@ -53,6 +59,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // monta o level
     private void Setup()
     {
+        
         // garante que o jogo esteja ativo
         Time.timeScale = 1.0f;
 
@@ -159,6 +166,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
 
         GameOverUi.PontosTxt(pontos.ToString());
         GameOverUi.RecordTxt(record.ToString());
+        GameOverUi.AcertosTxt(_maximo_acertos_seguidos.ToString());
 
         GameOverUi.gameObject.SetActive(true);
         barra.estaLigada = false;
@@ -241,7 +249,14 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // gerecia o erro do jogador
     private void Erro()
     {
+        //verifica se os acertos seguidos foram maior do que até i ultimo acerto
+        if(_acertos_seguidos > _maximo_acertos_seguidos)
+        {
+            _maximo_acertos_seguidos = _acertos_seguidos;
+        }
+        _acertos_seguidos = 0;
 
+        //reproduz o som do erro
         this._audioSource.PlayOneShot(somErro);
 
         // retonar o combo para 1
@@ -265,6 +280,8 @@ public class LevelControllerBehaviourScript : MonoBehaviour
     // gerencia o acerto do Jogador
     private void Acerto()
     {
+        //adiciona o acerto seguido
+        _acertos_seguidos++;
         //troca a cor da particula de fundo
         Color nova_cor = _modelo.cor;
         nova_cor.a = 0.3f;
@@ -291,7 +308,7 @@ public class LevelControllerBehaviourScript : MonoBehaviour
         else
         {// se a barra esta ativa
             UiInGame.ComboTxt("2x" + combo.ToString());
-            barra.Carregar(5); // carrega mais 5 pontos de energia se a barra de special está ativa
+            barra.Carregar(restauracaoBarra); // carrega mais 5 pontos de energia se a barra de special está ativa
         }
         //calcula o nivel
         _moduladorDoNivel--;
@@ -381,6 +398,11 @@ public class LevelControllerBehaviourScript : MonoBehaviour
 
 
         }
+
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
+
         /*
         if (Input.acceleration.sqrMagnitude > 2 & barraSpecial.EstaCheia() & )
         {

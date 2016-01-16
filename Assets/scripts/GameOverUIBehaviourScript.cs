@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class GameOverUIBehaviourScript : MonoBehaviour {
 
     
-    public Text lbPontos, lbRecord, txtRecord, txtPontos, lbRanking, lbJogar; //labels 
+    public Text lbPontos, lbRecord, lbAcertos, txtRecord, txtPontos, txtAcertos, lbRanking, lbJogar; //labels 
 
 	// Use this for initialization
 	void Start () {
@@ -31,5 +31,11 @@ public class GameOverUIBehaviourScript : MonoBehaviour {
     {
         txtPontos.text = str;
     }
-    	
+
+    // configura os acertos
+    public void AcertosTxt(string str)
+    {
+        txtAcertos.text = str;
+    }
+
 }

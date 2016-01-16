@@ -15,5 +15,10 @@ public class NavegacaoBehaviourScript : MonoBehaviour {
         SceneManager.LoadScene(cena);
                 
     }
+    //quita da aplicação
+    public void Sair()
+    {
+        Application.Quit();
+    }
 
 }
